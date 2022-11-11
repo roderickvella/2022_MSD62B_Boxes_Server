@@ -53,4 +53,24 @@ public class GameManager : MonoBehaviour
         });
 
     }
+
+    [ContextMenu("Get Boxes")]
+    public void GetBoxes()
+    {
+        print("Getting boxes from server");
+        RestClient.GetArray<Box>(baseURI + "api/getboxes").Then(allBoxes =>
+          {
+              print(allBoxes);
+              foreach (Box box in allBoxes)
+              {
+                  GameObject boxCreated = Instantiate(boxPrefab, transform.position, Quaternion.identity);
+                  boxCreated.transform.position = new Vector3(box.positionX, box.positionY, box.positionZ);
+              }
+          }).Catch(err =>
+          {
+              var error = err as RequestException;
+              print(err.Message);
+          });
+            
+    }
 }
